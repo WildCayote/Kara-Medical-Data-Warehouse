@@ -4,13 +4,12 @@
 
 ## Tools Used
 
-| Tool       | Purpose                                |
-| ---------- | -------------------------------------- |
-| DVC        | For handling data                      |
-| Pandas     | For data analysis                      |
-| matplotlib | For visualization                      |
-| Seaborn    | For enhacing matplotlib visualizations |
-| Numpy      | For numerical operations               |
+| Tool     | Purpose                                   |
+| -------- | ----------------------------------------- |
+| DVC      | For handling data                         |
+| Pandas   | For data analysis                         |
+| Numpy    | For numerical operations                  |
+| Telethon | For scrapping data from telegram channels |
 
 ## Contributor
 
