@@ -3,3 +3,4 @@ dvc_gdrive
 numpy
 pandas
 telethon
+python-dotenv
