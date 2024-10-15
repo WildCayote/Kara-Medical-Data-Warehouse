@@ -113,17 +113,34 @@ class Preprocessor:
     def remove_extra_space(text: str):
         """
         A function that will remove extra space and newline between words.
-    
+
         Args:
             text(str): the string we want to remove extra space and newlines
         Returns:
             The text with its extra space and newlines removed
         """
-    
+
         # remove extra spaces
         result = re.sub(pattern='\s+', repl=' ', string=text)
-    
+
         # remove newlines
         result = re.sub(pattern='\n', repl=' ', string=result)
+
+        return result
     
+    @staticmethod
+    def preprocess_text(text: str):
+        """"""
+        # 1) remove the emojis found in the text
+        result = Preprocessor.remove_emojis(text=text)
+
+        # 2) remove the special characters found in the text
+        result = Preprocessor.remove_special_characters(text=result)
+
+        # 3) normalize the text
+        result = Preprocessor.normalize_data(text=result)
+
+        # 4) remove extra space
+        result = Preprocessor.remove_extra_space(text=result)
+
         return result
