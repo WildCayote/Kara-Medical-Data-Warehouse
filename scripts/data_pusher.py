@@ -109,7 +109,7 @@ class DB_Client:
 
         return id
 
-    def add_messages(self, channel_id: str, telegram_id_col: str, message_col: str, media_path_col: str, data: pd.DataFrame):
+    def add_messages(self, channel_id: str, telegram_id_col: str, message_col: str, media_path_col: str, date_col:str, data: pd.DataFrame):
         """
         A method that inserts messages into the message table.
 
@@ -118,16 +118,17 @@ class DB_Client:
             telegram_id_col(str): the name of the column that contains the telegram_id values.
             message_col(str): the name of the column that contains the message values.
             media_path_col(str): the name of the column that contains the media_path values.
+            date_col(str): the name of the column that contains the date values.
             data(pd.DataFrame): the dataframe that contains the data to be inserted.
 
         Returns: 
         """
 
         # obtain the columns of interest
-        data = data[[telegram_id_col, message_col, media_path_col]]
+        data = data[[telegram_id_col, message_col, media_path_col, date_col]]
 
         # first half of the query, the one that declares the table and the types of values to be passed
-        first_half = f"INSERT INTO message (id, channel_id, telegram_id, message, media_path) VALUES"
+        first_half = f"INSERT INTO message (id, channel_id, telegram_id, message, date, media_path) VALUES"
         
         # generate the values to add to the second half of the query
         values = []
@@ -136,7 +137,7 @@ class DB_Client:
             id = uuid.uuid4()
 
             # create the sql query
-            query = f" ('{id}', '{channel_id}', '{row[telegram_id_col]}', '{row[message_col]}', '{row[media_path_col]}'),"
+            query = f" ('{id}', '{channel_id}', '{row[telegram_id_col]}', '{row[message_col]}', '{row[date_col]}', '{row[media_path_col]}'),"
 
             # add to the values list
             values.append(query)
@@ -179,7 +180,7 @@ class DB_Client:
 
             # add the messages of that channel to the message channel
             channel_messages = grouping.get_group(name=channel)
-            self.add_messages(channel_id=channel_id, telegram_id_col="id", message_col="message", media_path_col="media_path", data=channel_messages)
+            self.add_messages(channel_id=channel_id, telegram_id_col="id", message_col="message", media_path_col="media_path", date_col='date', data=channel_messages)
             print(f"{channel_messages.shape[0]} messages add for channel {title}({username}).\n")
             
         print("Finished pushing data!")
@@ -222,6 +223,6 @@ if __name__ == "__main__":
 
     # read the 
     data = pd.read_csv(data_path)
-    
+
     # push the data to postgress
     client.push_data(data=data)
