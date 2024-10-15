@@ -80,13 +80,9 @@ class DB_Client:
             Exception: If there is an error while executing the query.
         """
         try:
-            if 'SELECT' in query:
-                response = pd.read_sql_query(sql=query, con=self.connection)
-                return response
-            else:
-                self.cursor.execute(query=query)
-                self.connection.commit()
-                return None
+            self.cursor.execute(query=query)
+            self.connection.commit()
+            return None
         except Exception as e:
             print(f"Failed to execute query: {e}")
             return None
@@ -157,6 +153,37 @@ class DB_Client:
         # execute the command
         self.execute_query(query=query)
 
+    def push_data(self, data: pd.DataFrame):
+        """
+        A method that pushes the cleaned data to a postgress database
+
+        Args:
+            data(pd.DataFrame): the cleaned data frame
+        """
+
+        # group the data by username and title
+        grouping = data.groupby(by=['channel_username', 'channel_title'])
+
+        # obtain the channels with their channel_usernames and channel_titles
+        channels = list(grouping.groups.keys())
+
+        # add the channel to the tabel and also add all the related messages
+        for channel in channels:
+            # obtain the channel username and title
+            username = channel[0]
+            title = channel[1]
+
+            # add the channel to channel table
+            channel_id = self.add_channel(username=username, title=title)
+            print(f"Channel {title}({username}) has been added with the UUID {channel_id}.")
+
+            # add the messages of that channel to the message channel
+            channel_messages = grouping.get_group(name=channel)
+            self.add_messages(channel_id=channel_id, telegram_id_col="id", message_col="message", media_path_col="media_path", data=channel_messages)
+            print(f"{channel_messages.shape[0]} messages add for channel {title}({username}).\n")
+            
+        print("Finished pushing data!")
+
 if __name__ == "__main__":
     from dotenv import load_dotenv
     import argparse, os
@@ -195,3 +222,6 @@ if __name__ == "__main__":
 
     # read the 
     data = pd.read_csv(data_path)
+    
+    # push the data to postgress
+    client.push_data(data=data)
