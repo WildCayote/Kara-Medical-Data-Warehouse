@@ -131,7 +131,14 @@ class Preprocessor:
     
     @staticmethod
     def preprocess_text(text: str):
-        """"""
+        """
+        A method that creates a preprocessing pipeline from the other methods defined in the class.
+
+        Args:
+            text(str): the string we want to pass through the preprocessing pipeline
+        Returns:
+            The text which has been passed to the preprocessing pipeline
+        """
         # 1) remove the emojis found in the text
         result = Preprocessor.remove_emojis(text=text)
 
