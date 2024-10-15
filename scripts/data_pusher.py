@@ -177,14 +177,14 @@ class DB_Client:
 
             # add the channel to channel table
             channel_id = self.add_channel(username=username, title=title)
-            log_message(f"Channel {title}({username}) has been added with the UUID {channel_id}.")
+            log_message(msg=f"Channel {title}({username}) has been added with the UUID {channel_id}.")
 
             # add the messages of that channel to the message channel
             channel_messages = grouping.get_group(name=channel)
             self.add_messages(channel_id=channel_id, telegram_id_col="id", message_col="message", media_path_col="media_path", date_col='date', data=channel_messages)
-            log_message(f"{channel_messages.shape[0]} messages add for channel {title}({username}).\n")
+            log_message(msg=f"{channel_messages.shape[0]} messages add for channel {title}({username}).\n")
             
-        log_message("Finished pushing data!")
+        log_message(msg="Finished pushing data!")
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
