@@ -35,7 +35,16 @@ class Preprocessor:
 
     @staticmethod
     def remove_special_characters(text: str):
-        """"""
+        """
+        A function that will remove punctuations, this includes amharic punctuations list ፤, ። and ፣.
+    
+        Args:
+            text(str): the string from which the punctuations are going to be removed
+        Returns:
+            The text without punctuations
+        """ 
+        normalized_text = re.sub('[\!\@\#\$\%\^\«\»\&\*\(\)\…\[\]\{\}\;\“\”\›\’\‘\"\'\:\,\.\‹\/\<\>\?\\\\|\`\´\~\-\=\+\፡\።\፤\;\፦\፥\፧\፨\፠\፣]', '',text) 
+        return normalized_text
     
     @staticmethod
     def normalize_data(text: str):
