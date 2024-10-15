@@ -63,6 +63,58 @@ class DB_Client:
             print(f"Failed to establish connection: {e}")
             return None
 
+    def execute_query(self, query: str):
+        """
+        Executes a SQL query on the connected PostgreSQL database.
+
+        This method takes a SQL query as input, executes it, and returns the result as a pandas DataFrame.
+
+        Args:
+            query (str): The SQL query to be executed.
+
+        Returns:
+            pandas.DataFrame: A DataFrame containing the query result if successful.
+            None: Returns `None` if the query execution fails.
+        
+        Raises:
+            Exception: If there is an error while executing the query.
+        """
+        try:
+            if 'SELECT' in query:
+                response = pd.read_sql_query(sql=query, con=self.connection)
+                return response
+            else:
+                self.cursor.execute(query=query)
+                self.connection.commit()
+                return None
+        except Exception as e:
+            print(f"Failed to execute query: {e}")
+            return None
+
+    def add_channel(self, username: str, title: str):
+        """
+        A method that adds a new telegram to the channel table.
+
+        Args:
+            username(str): the username of the channel
+            title(str): the title of the channel
+
+        Returns:
+            uuid(UUID): the uuid of the newly added telegram channel
+        """
+        import uuid
+
+        # generate a uuid
+        id = uuid.uuid4()
+
+        # create the sql query
+        query = f"INSERT INTO channel (id, username, title) VALUES ('{id}', '{username}', '{title}')"
+
+        # execute the query
+        response = self.execute_query(query=query)
+
+        return id
+
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
@@ -91,10 +143,14 @@ if __name__ == "__main__":
     username = os.getenv("DB_USER")
     password = os.getenv("DB_PASSWORD")
 
-    connection = DB_Client(
+    # create a database client
+    client = DB_Client(
         host=host,
         port=port,
         user_name=username,
         password=password,
         database_name=db_name
     )
+
+    # test the addition of a channel
+    id = client.add_channel(username='@test', title='title')
