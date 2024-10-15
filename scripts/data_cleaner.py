@@ -15,6 +15,7 @@ class Preprocessor:
         Returns:
             The string without any emojis
         """
+        if type(text) != type(';'): print(text)
         emoji_pattern = re.compile(
             "[" 
             "\U0001F600-\U0001F64F"  # emoticons
@@ -144,3 +145,39 @@ class Preprocessor:
         result = Preprocessor.remove_extra_space(text=result)
 
         return result
+
+
+if __name__ == "__main__":
+    import argparse, os
+    import pandas as pd
+
+    # define an argument for providing the path to the unprocessed Amharic data, expects it to be in csv format
+    parser = argparse.ArgumentParser(
+        prog="Amharic Text Preprocessor",
+        description="Cleans and saves Amharic data presented to it in a csv file"
+    )
+
+    parser.add_argument("--path", default="./data/telegram_data.csv") # an argument for defining the path to the amharic text csv file
+    parser.add_argument("--out", default="./data/preprocessed.csv") # an argument for defining the path to save the preprocessed data
+    parser.add_argument("--text_col", default="message") # an argument for defining the column of the csv that contains the amharic texts
+
+    args = parser.parse_args()
+
+    # obtain the parsed argumnets
+    path = args.path
+    out = args.out
+    text_col = args.text_col
+
+    # load the data
+    data = pd.read_csv(path)
+
+    # remove rows that don't have any data
+    data = data.dropna(subset=[text_col])
+
+    print(f"Remaining data: {data.shape[0]}")
+
+    # apply the preprocessing pipeline to the column with the text data
+    data[text_col] = data[text_col].apply(lambda x : Preprocessor.preprocess_text(text=x))
+
+    # save the preprocessed data to the path specified
+    data.to_csv(out, index=False)
