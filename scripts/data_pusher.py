@@ -1,5 +1,5 @@
 import pandas as pd
-import psycopg2
+import psycopg2, uuid
 
 class DB_Client:
     """
@@ -102,8 +102,6 @@ class DB_Client:
         Returns:
             uuid(UUID): the uuid of the newly added telegram channel
         """
-        import uuid
-
         # generate a uuid
         id = uuid.uuid4()
 
@@ -111,10 +109,53 @@ class DB_Client:
         query = f"INSERT INTO channel (id, username, title) VALUES ('{id}', '{username}', '{title}')"
 
         # execute the query
-        response = self.execute_query(query=query)
+        self.execute_query(query=query)
 
         return id
 
+    def add_messages(self, channel_id: str, telegram_id_col: str, message_col: str, media_path_col: str, data: pd.DataFrame):
+        """
+        A method that inserts messages into the message table.
+
+        Args:
+            channel_id_col(str): the id of the telegram channel we want the messages to be added to.
+            telegram_id_col(str): the name of the column that contains the telegram_id values.
+            message_col(str): the name of the column that contains the message values.
+            media_path_col(str): the name of the column that contains the media_path values.
+            data(pd.DataFrame): the dataframe that contains the data to be inserted.
+
+        Returns: 
+        """
+
+        # obtain the columns of interest
+        data = data[[telegram_id_col, message_col, media_path_col]]
+
+        # first half of the query, the one that declares the table and the types of values to be passed
+        first_half = f"INSERT INTO message (id, channel_id, telegram_id, message, media_path) VALUES"
+        
+        # generate the values to add to the second half of the query
+        values = []
+        for index, row in data.iterrows():
+            # generate uuid for every entry
+            id = uuid.uuid4()
+
+            # create the sql query
+            query = f" ('{id}', '{channel_id}', '{row[telegram_id_col]}', '{row[message_col]}', '{row[media_path_col]}'),"
+
+            # add to the values list
+            values.append(query)
+        
+        # create the second half of the query
+        second_half = ''.join(values)
+        
+        # obtain the query
+        query = first_half + second_half
+
+        # remove the last ','
+        query = query[:-1]
+
+        # execute the command
+        self.execute_query(query=query)
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
@@ -152,5 +193,5 @@ if __name__ == "__main__":
         database_name=db_name
     )
 
-    # test the addition of a channel
-    id = client.add_channel(username='@test', title='title')
+    # read the 
+    data = pd.read_csv(data_path)
