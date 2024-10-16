@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal
 import models
@@ -37,3 +37,24 @@ def get_messages(db: Session = Depends(get_db)):
 @router.get("/channels/", response_model=list[schemas.Channel])
 def get_channels(db: Session = Depends(get_db)):
     return db.query(models.Channel).all()
+
+@router.get("/phone-numbers/{channel_id}", response_model=list[schemas.PhoneNumbersTransformed])
+def get_phone_numbers_by_channel(channel_id: str, db: Session = Depends(get_db)):
+    phone_numbers = db.query(models.PhoneNumbersTransformed).filter(models.PhoneNumbersTransformed.channel_id == channel_id).all()
+    if not phone_numbers:
+        raise HTTPException(status_code=404, detail="Phone numbers not found for this channel ID")
+    return phone_numbers
+
+@router.get("/product-prices/{channel_id}", response_model=list[schemas.ProductPricesTransformed])
+def get_product_prices_by_channel(channel_id: str, db: Session = Depends(get_db)):
+    prices = db.query(models.ProductPricesTransformed).filter(models.ProductPricesTransformed.channel_id == channel_id).all()
+    if not prices:
+        raise HTTPException(status_code=404, detail="Prices not found for this channel ID")
+    return prices
+
+@router.get("/object-detection/{media_path}", response_model=list[schemas.ImageDetection])
+def get_object_detection_by_media(media_path: str, db: Session = Depends(get_db)):
+    detections = db.query(models.ImageDetection).filter(models.ImageDetection.media_path == media_path).all()
+    if not detections:
+        raise HTTPException(status_code=404, detail="Object detection results not found for this media path")
+    return detections
