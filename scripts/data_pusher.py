@@ -100,7 +100,11 @@ class DB_Client:
             uuid(UUID): the uuid of the newly added telegram channel
         """
         # generate a uuid
-        id = uuid.uuid4()
+        id = str(uuid.uuid4()).encode('utf-8').decode('utf-8')
+
+        # encode the username and titles
+        username = username.encode('utf-8').decode('utf-8')
+        title = title.encode('utf-8').decode('utf-8')
 
         # create the sql query
         query = f"INSERT INTO channel (id, username, title) VALUES ('{id}', '{username}', '{title}')"
@@ -135,10 +139,16 @@ class DB_Client:
         values = []
         for index, row in data.iterrows():
             # generate uuid for every entry
-            id = uuid.uuid4()
+            id = str(uuid.uuid4()).encode('utf-8').decode('utf-8')
+
+            # encode the message, channel_id, media_path in utf-8
+            encoded_message = str(row[message_col]).encode('utf-8').decode('utf-8')
+            channel_id = channel_id.encode('utf-8').decode('utf-8')
+            media_path = str(row[media_path_col]).encode('utf-8').decode('utf-8')
+            date = str(row[date_col]).encode('utf-8').decode('utf-8')
 
             # create the sql query
-            query = f" ('{id}', '{channel_id}', '{row[telegram_id_col]}', '{row[message_col]}', '{row[date_col]}', '{row[media_path_col]}'),"
+            query = f" ('{id}', '{channel_id}', '{row[telegram_id_col]}', '{encoded_message}', '{date}', '{media_path}'),"
 
             # add to the values list
             values.append(query)
