@@ -35,7 +35,7 @@ def detect_objects(folder_path: str, model: object):
             class_name = model.names[int(cls)]
 
             detections.append({
-                'media_path': image_path,
+                'media_path': path,
                 'label': class_name,
                 'confidence': conf,
                 'x1': x1,
