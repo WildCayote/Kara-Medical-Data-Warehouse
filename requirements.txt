@@ -4,3 +4,6 @@ numpy
 pandas
 telethon
 python-dotenv
+psycopg2
+dbt-core==1.8.7
+dbt-postgres

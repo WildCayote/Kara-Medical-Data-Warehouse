@@ -1,0 +1,84 @@
+version: 2
+
+sources:
+  - name: public
+    schema: public
+    tables:
+      - name: message
+
+models:
+  - name: message.sql
+    description: "A table containing all of the scraped messages"
+    columns:
+      - name: id
+        description: "The id of the message"
+        data_tests:
+          - not_null
+          - unique
+      - name: channel_id
+        description: "The id of the channel the phone number belongs to"
+        data_tests:
+          - not_null
+      - name: message
+        description: "The content of the telegram message"
+        data_test:
+          - not_null
+      - name: telegram_id
+        description: "The message id given by telegram"
+        data_test:
+          - not_null
+      - name: media_path
+        description: "The path to the media file related to the message"
+      - name: date
+        description: "The timestamp of the message"
+
+  - name: phone_numebrs_transformed
+    description: "A table containing the phone numbers related with each channel"
+    columns:
+      - name: id
+        description: "The id of the message"
+        data_tests:
+          - not_null
+          - unique
+      - name: channel_id
+        description: "The id of the channel the phone number belongs to"
+        data_tests:
+          - not_null
+      - name: phone_numbers
+        description: "The phone numbers for the message"
+
+  - name: product_prices_transformed
+    description: "A table containing the prices of products found in each message"
+    columns:
+      - name: id
+        description: "The id of the message"
+        data_tests:
+          - not_null
+          - unique
+      - name: channel_id
+        description: "The id of the channel the phone number belongs to"
+        data_tests:
+          - not_null
+      - name: price
+        description: "The price of the product"
+        data_tests:
+          - not_null
+
+  - name: products_transfromed.sql
+    description: "A table for containing the names of the products detected in the message, it also includes the media path"
+    columns:
+      - name: id
+        description: "The id of the message"
+        data_tests:
+          - not_null
+          - unique
+      - name: channel_id
+        description: "The id of the channel the phone number belongs to"
+        data_tests:
+          - not_null
+      - name: name
+        description: "The name of the product"
+        data_test:
+          - not_null
+      - name: media_path
+        description: "The path to the image of the product"

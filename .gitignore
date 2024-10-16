@@ -3,3 +3,5 @@ data/
 **/__pycache__
 .env
 /data
+log.log
+/logs
