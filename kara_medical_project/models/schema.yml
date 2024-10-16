@@ -21,3 +21,18 @@ models:
           - not_null
       - name: phone_numbers
         description: "The phone numbers for the message"
+
+  - name: product_prices_transformed
+    description: "A table containing the prices of products found in each message"
+    columns:
+      - name: id
+        description: "The id of the message"
+        data_tests:
+          - not_null
+          - unique
+      - name: channel_id
+        description: "The id of the channel the phone number belongs to"
+        data_tests:
+          - not_null
+      - name: price
+        description: "The price of the product"
