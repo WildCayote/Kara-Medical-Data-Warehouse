@@ -30,9 +30,13 @@ def detect_objects(folder_path: str, model: object):
 
         for object in detection_results.xyxy[0].cpu().numpy():
             x1, y1, x2, y2, conf, cls = object[:6]
+            
+            # Get the class name from the model
+            class_name = model.names[int(cls)]
+
             detections.append({
-                'image': image_path,
-                'class': int(cls),
+                'media_path': image_path,
+                'label': class_name,
                 'confidence': conf,
                 'x1': x1,
                 'y1': y1,
