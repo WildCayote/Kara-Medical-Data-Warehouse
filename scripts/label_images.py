@@ -1,5 +1,6 @@
 import torch, cv2
 import pandas as pd
+from tqdm import tqdm
 
 def detect_objects(folder_path: str, model: object):
     """
@@ -15,8 +16,11 @@ def detect_objects(folder_path: str, model: object):
     # a list for containing the detection information
     detections = []
 
+    # get the list of images
+    image_files = os.listdir(folder_path)
+
     # loop throught the images and detect objects
-    for path in os.listdir(folder_path):
+    for path in tqdm(image_files, desc="Processing Images", unit="Images"):
         # load the image using opencv
         image_path = os.path.join(images_folder, path)
         image = cv2.imread(filename=image_path)
