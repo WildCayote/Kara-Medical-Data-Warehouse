@@ -11,3 +11,6 @@ torch
 torchvision
 opencv-python
 tqdm
+fastapi
+sqlalchemy
+uvicorn
