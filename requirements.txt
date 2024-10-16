@@ -10,3 +10,4 @@ dbt-postgres
 torch 
 torchvision
 opencv-python
+tqdm
